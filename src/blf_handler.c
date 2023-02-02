@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include "blf_handler.h"
 #include "console-colors.h"
+#include <zlib.h>
 
 #define HOW_MANY_TO_READ 90000 
 #define BYTES_TO_STORE   5000
@@ -11,7 +13,7 @@
 static uint32_t blf_bytes = HOW_MANY_TO_READ;
 
  char tab_to_find[] = {0x20, 0xfb, 0x47};
- char * find_LOGG = "LOGG";
+ char * find_LOGG = "LOG";
  char * find_OBJ = "OBJ";
 
 struct byte_find_tag {
@@ -131,4 +133,10 @@ static void find_byte_sequence(byte_find_t * def, char * buffer,int i_buffer, in
      {
         def->index_to_be_checked = 0;
      }
+ }
+
+
+ void blf_header(void)
+ {
+    /* translate blf header*/
  }
