@@ -39,6 +39,10 @@ long int file_length(FILE *file_hd)
         fseek(file_hd, 0U, SEEK_SET );
         printf("actual location %ld \n",ftell(file_hd));
     }
+    else
+    {
+        printf("something is wrong");
+    }
     return file_size; 
 }
 
