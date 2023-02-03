@@ -28,6 +28,7 @@ add_executable(blf
     src/blf_analyse.c
     src/blf_handler.c
     src/files.c
+    src/blf_layout.c 
     )
     
 #target_include_directories(ctests 

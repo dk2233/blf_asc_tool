@@ -7,80 +7,77 @@
 #include "console-colors.h"
 #include <zlib.h>
 
-#define HOW_MANY_TO_READ 90000 
-#define BYTES_TO_STORE   5000
 
 static uint32_t blf_bytes = HOW_MANY_TO_READ;
 
  char tab_to_find[] = {0x20, 0xfb, 0x47};
- char * find_LOGG = "LOG";
- char * find_OBJ = "OBJ";
+ const char * find_OBJ = "OBJ";
 
-struct byte_find_tag {
-    char * to_be_find;
-    int length;
-    int index_to_be_checked; /* which of bytes now I am checking*/
-};
 
-typedef struct byte_find_tag byte_find_t;
 
 byte_find_t byte_find_def = {
     tab_to_find,
     3,
-    0
+    NULL,
+    0,
 };
 
 
-static void find_byte_sequence(byte_find_t * def, char * buffer,int i_buffer, int i );
+static fp_buffer_t fp_buf_container = {
+    {NULL, 0},
+    NULL,
+    0,
+};
+
+static void find_byte_sequence(byte_find_t * def, fp_buffer_t * fp_buf );
 
 
 
 
  void blf_analyze_start(char *text)
  {
-    int i = 0 ;
-    int i_buffer = 0;
-    byte_find_t byte_find_def_logg = {
-        find_LOGG,
-        strlen(find_LOGG),
-        0};
-
-    byte_find_t byte_find_def_OBJ = {
+    byte_find_t byte_find_def_OBJ = 
+    {
         find_OBJ,
-        strlen(find_OBJ),
-        0};
-    FILE * blf_file = file_binary_open(text);
+        (const int )strlen(find_OBJ),
+        NULL,
+        0
+    };
+    fp_buf_container.file_pointer_to_read = file_binary_open(text);
 
     char * tab = calloc(BYTES_TO_STORE, sizeof(char));
     
-    while (( i < blf_bytes) && (tab != NULL))
+
+    fp_buf_container.buffer_container.buffer = tab;
+    while (( fp_buf_container.file_index < blf_bytes) && (tab != NULL))
     {
-        tab[i_buffer] = getc(blf_file);
-        if (feof(blf_file))
+        fp_buf_container.buffer_container.buffer[fp_buf_container.buffer_container.buffer_index] = getc(fp_buf_container.file_pointer_to_read);
+        if (feof(fp_buf_container.file_pointer_to_read))
         {
-            printf("end of file reached \n");
+            printf("end of file %s reached \n", text);
             break;
         }
         // printf("%hhx ",tab[i]);
         // printf("%c ",tab[i]);
 
-        find_byte_sequence(&byte_find_def_OBJ, tab,i_buffer, i);
+        find_byte_sequence(&byte_find_def_OBJ, &fp_buf_container );
 
-        find_byte_sequence(&byte_find_def_logg, tab, i_buffer, i);
+        find_byte_sequence(&byte_find_def_header,&fp_buf_container);
 
-        i++;
-        i_buffer++;
-        if (i_buffer == BYTES_TO_STORE)
+        /*increase file location*/
+        fp_buf_container.file_index++;
+        fp_buf_container.buffer_container.buffer_index++;
+        if (fp_buf_container.buffer_container.buffer_index == BYTES_TO_STORE)
         {
-            i_buffer = 0;
+            fp_buf_container.buffer_container.buffer_index = 0;
         }
     }
     putchar('\n');
     free(tab);
 
-    printf("current file position %d i_buffer %d\n",ftell(blf_file), i_buffer);
+    printf("current file position %d i_buffer %d\n",ftell(fp_buf_container.file_pointer_to_read), fp_buf_container.buffer_container.buffer_index);
 
-    fclose(blf_file);
+    fclose(fp_buf_container.file_pointer_to_read);
 
  }
 
@@ -117,16 +114,17 @@ void asc_analyze_start(char * text)
 
  }
 
-static void find_byte_sequence(byte_find_t * def, char * buffer,int i_buffer, int i )
+static void find_byte_sequence(byte_find_t * def, fp_buffer_t * fp_buf )
  {
-     if (buffer[i_buffer] == def->to_be_find[def->index_to_be_checked])
+     if (fp_buf->buffer_container.buffer[fp_buf->buffer_container.buffer_index] == def->to_be_find[def->index_to_be_checked])
      {
         def->index_to_be_checked++;
         // cc_fprintf(CC_FG_CYAN, stdout, "\nfound one %c \n", buffer[i_buffer]);
 
         if (def->index_to_be_checked == def->length)
         {
-            cc_fprintf(CC_FG_RED, stdout, "\nI have found %s at %d \n", def->to_be_find, i - def->length + 1);
+            cc_fprintf(CC_FG_RED, stdout, "\nI have found %s at %d \n", def->to_be_find, ftell(fp_buf->file_pointer_to_read) - def->length + 1);
+            if (def->call_function != NULL)     def->call_function(fp_buf);
         }
      }
      else
