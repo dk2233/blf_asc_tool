@@ -11,7 +11,6 @@
 static uint32_t blf_bytes = HOW_MANY_TO_READ;
 
  char tab_to_find[] = {0x20, 0xfb, 0x47};
- const char * find_OBJ = "LOBJ";
 
 
 
@@ -36,13 +35,6 @@ static void find_byte_sequence(byte_find_t * def, fp_buffer_t * fp_buf );
 
  void blf_analyze_start(char *text)
  {
-    byte_find_t byte_find_def_OBJ = 
-    {
-        find_OBJ,
-        (const int )strlen(find_OBJ),
-        NULL,
-        0
-    };
     fp_buf_container.file_pointer_to_read = file_binary_open(text);
 
     char * tab = calloc(BYTES_TO_STORE, sizeof(char));
@@ -133,8 +125,3 @@ static void find_byte_sequence(byte_find_t * def, fp_buffer_t * fp_buf )
      }
  }
 
-
- void blf_header(void)
- {
-    /* translate blf header*/
- }

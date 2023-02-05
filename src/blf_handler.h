@@ -19,6 +19,7 @@ symbols
 
 
 #define HEADER_BYTE_SIZE    144U
+
 #define HEADER_MARKER "LOGG"
 #define CONTAINER_MARKER "LOBJ"
 
@@ -64,13 +65,27 @@ struct _header_t
 };
 
 typedef struct _header_t header_t;
+
+struct __hdr_base_object_t
+{
+    char name[4];
+    uint16_t object_header_size;
+    uint16_t object_header_version;
+    uint32_t object_size;
+    uint32_t object_type;
+};
+
+typedef struct __hdr_base_object_t hdr_base_t;
+
 /*
 external definition
 */
 extern byte_find_t byte_find_def_header; 
-
+extern byte_find_t byte_find_def_OBJ; 
 /*
 external functiona
 */
 extern void blf_header_parsing(fp_buffer_t * fp_buf); 
+
+extern void blf_object_parsing(fp_buffer_t *fp_buf);
 #endif
