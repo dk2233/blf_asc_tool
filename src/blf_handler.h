@@ -66,7 +66,7 @@ struct _header_t
 
 typedef struct _header_t header_t;
 
-struct __hdr_base_object_t
+struct _hdr_base_object_t
 {
     char name[4];
     uint16_t object_header_size;
@@ -75,8 +75,16 @@ struct __hdr_base_object_t
     uint32_t object_type;
 };
 
-typedef struct __hdr_base_object_t hdr_base_t;
+typedef struct _hdr_base_object_t hdr_base_t;
 
+struct _object_hdr_v1
+{
+    uint32_t flags;
+    uint16_t client_index;
+    uint16_t obj_version;
+    uint64_t timestamp;
+};
+typedef struct _object_hdr_v1 object_hdr_v1_t;
 /*
 external definition
 */
@@ -91,6 +99,6 @@ extern void blf_object_parsing(fp_buffer_t *fp_buf);
 
 extern void blf_main_header_object_parsing(fp_buffer_t *fp_buf, hdr_base_t * hdr_base_struct);
 
-extern void blf_object_parse_V1(fp_buffer_t * fp_buf);
+extern void blf_object_parse_V1(fp_buffer_t * fp_buf, object_hdr_v1_t *obj_v1_struct);
 extern void blf_object_parse_V2(fp_buffer_t * fp_buf);
 #endif
