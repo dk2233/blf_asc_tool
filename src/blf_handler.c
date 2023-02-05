@@ -11,7 +11,7 @@
 static uint32_t blf_bytes = HOW_MANY_TO_READ;
 
  char tab_to_find[] = {0x20, 0xfb, 0x47};
- const char * find_OBJ = "OBJ";
+ const char * find_OBJ = "LOBJ";
 
 
 
@@ -123,7 +123,7 @@ static void find_byte_sequence(byte_find_t * def, fp_buffer_t * fp_buf )
 
         if (def->index_to_be_checked == def->length)
         {
-            cc_fprintf(CC_FG_RED, stdout, "\nI have found %s at %d \n", def->to_be_find, ftell(fp_buf->file_pointer_to_read) - def->length + 1);
+            cc_fprintf(CC_FG_RED, stdout, "\nI have found %s at %d \n", def->to_be_find, ftell(fp_buf->file_pointer_to_read) - def->length + 0);
             if (def->call_function != NULL)     def->call_function(fp_buf);
         }
      }

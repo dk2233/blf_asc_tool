@@ -20,7 +20,7 @@ symbols
 
 #define HEADER_BYTE_SIZE    144U
 #define HEADER_MARKER "LOGG"
-#define CONTAINER_MARKER "OBJ"
+#define CONTAINER_MARKER "LOBJ"
 
 /* 
 
@@ -49,7 +49,21 @@ struct byte_find_tag {
 typedef struct byte_find_tag byte_find_t;
 
 
+struct _header_t 
+{
+    char name[4]; /* 4 bytes*/
+    uint32_t  header_size; /*4*/
+    uint8_t  B_array1[8]; /* 8 */
+    uint64_t blf_file_size; /*8 */
+    uint64_t blf_unpacked_file_size; /*8*/
+    uint32_t L_data2; /*4*/
+    uint32_t L_data3; /*4*/
+    uint16_t H_data_1[8]; /* 16*/
+    uint16_t H_data_2[8]; /* 16 */
 
+};
+
+typedef struct _header_t header_t;
 /*
 external definition
 */
