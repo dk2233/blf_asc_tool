@@ -88,4 +88,9 @@ external functiona
 extern void blf_header_parsing(fp_buffer_t * fp_buf); 
 
 extern void blf_object_parsing(fp_buffer_t *fp_buf);
+
+extern void blf_main_header_object_parsing(fp_buffer_t *fp_buf, hdr_base_t * hdr_base_struct);
+
+extern void blf_object_parse_V1(fp_buffer_t * fp_buf);
+extern void blf_object_parse_V2(fp_buffer_t * fp_buf);
 #endif

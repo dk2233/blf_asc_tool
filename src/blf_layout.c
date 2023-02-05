@@ -51,12 +51,11 @@ void blf_header_parsing(fp_buffer_t * fp_buf)
 }
 
 
-void blf_object_parsing(fp_buffer_t *fp_buf)
+void blf_main_header_object_parsing(fp_buffer_t *fp_buf, hdr_base_t * hdr_base_struct)
 {
     uint8_t i = sizeof(hdr_base_t) - strlen(byte_find_def_header.to_be_find);
     uint32_t start_header_index = fp_buf->buffer_container.buffer_index +1 - strlen(byte_find_def_header.to_be_find);
 
-    // fseek(fp_buf->file_pointer_to_read, 0 , SEEK_SET);
     char byte;
     do 
     {
@@ -74,12 +73,41 @@ void blf_object_parsing(fp_buffer_t *fp_buf)
     putchar('\n');
     /*cast buffer to struct header_t*/
 
-    hdr_base_t * blf_obj_hdr_b = (hdr_base_t *) &fp_buf->buffer_container.buffer[start_header_index];
+    hdr_base_struct = (hdr_base_t *) &fp_buf->buffer_container.buffer[start_header_index];
 
-    printf("object version is %d object size has %d \nblf object size %ld \n object type %ld\n",blf_obj_hdr_b->object_header_version, blf_obj_hdr_b->object_header_size, blf_obj_hdr_b->object_size, blf_obj_hdr_b->object_type );
+    printf("object version is %d object size has %d \nblf object size %ld \n object type %ld\n",hdr_base_struct->object_header_version,\
+     hdr_base_struct->object_header_size, hdr_base_struct->object_size, hdr_base_struct->object_type );
 
     /* after leaving this function we incresed also indexes - */
     fp_buf->file_index--;
     fp_buf->buffer_container.buffer_index--;
+}
+
+
+void blf_object_parse_V1(fp_buffer_t * fp_buf)
+{
+
+}
+
+void blf_object_parse_V2(fp_buffer_t * fp_buf)
+{
+    
+}
+
+void blf_object_parsing(fp_buffer_t *fp_buf)
+{
+
+    hdr_base_t hdr_base_data;
+    blf_main_header_object_parsing(fp_buf, &hdr_base_data);
+
+    if (hdr_base_data.object_header_version == 1)
+    {
+        blf_object_parse_V1(fp_buf);
+    }
+    else if (hdr_base_data.object_header_version == 2)
+    {
+        blf_object_parse_V2(fp_buf);
+
+    }
 
 }
